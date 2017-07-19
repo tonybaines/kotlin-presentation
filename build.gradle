@@ -1,0 +1,100 @@
+buildscript {
+	dependencies {
+		classpath 'org.ysb33r.gradle:vfs-gradle-plugin:1.0-beta1'
+	}
+}
+
+plugins {
+	id 'org.asciidoctor.convert' version '1.5.2'
+	id 'com.github.jruby-gradle.base' version '0.1.17'
+}
+
+apply plugin: 'com.github.jruby-gradle.base'
+apply plugin: 'org.ysb33r.vfs'
+apply plugin: 'java'
+apply plugin: 'org.asciidoctor.convert'
+
+version = '1.0.0-SNAPSHOT'
+
+ext {
+	jrubyVersion = '1.7.21'
+	revealjsVersion = '2.6.2'
+	asciidoctorBackendVersion = 'master'
+	downloadDir = new File(buildDir,'download')
+	templateDir = new File(downloadDir,'templates')
+	revealjsDir = new File(downloadDir,'reveal.js')
+}
+
+jruby {
+	defaultRepositories = false
+	defaultVersion = jrubyVersion
+	execVersion = jrubyVersion
+}
+
+repositories {
+	jcenter()
+	mavenCentral()
+	maven {
+		name 'rubygems-release'
+		url 'http://rubygems-proxy.torquebox.org/releases'
+	}
+}
+
+task download doLast {
+	mkdir downloadDir
+	vfs {
+		cp "zip:${project.projectDir}/lib/asciidoctor-reveal.js-${asciidoctorBackendVersion}.zip!asciidoctor-reveal.js-${asciidoctorBackendVersion}",
+			templateDir, recursive:true, overwrite:true
+		cp "zip:${project.projectDir}/lib/reveal.js-${revealjsVersion}.zip!reveal.js-${revealjsVersion}",
+			revealjsDir, recursive:true, overwrite:true
+	}
+}
+
+download {
+	description "Download extra revealjs resources"
+	outputs.dir templateDir
+	outputs.dir revealjsDir
+}
+
+asciidoctor {
+	sources {
+		include 'java-8-introduction.adoc'
+	}
+
+	resources {
+		from ('src/resources') {
+			include 'images/**'
+		}
+		from (downloadDir) {
+			include 'reveal.js/**'
+		}
+	}
+
+	backends    'revealjs'
+
+	requires = ['asciidoctor-diagram']
+	gemPath file('src/resources/gems')
+
+	attributes	'build-gradle': file('build.gradle'),
+		'sourcedir': project.sourceSets.main.java.srcDirs[0],
+		'source-highlighter' : 'coderay', // highlight/coderay/pygment
+		'imagesdir':'./images',
+		'toc':'left',
+		'setanchors':'true',
+		'idprefix':'',
+		'idseparator':'-',
+		'docinfo1':'true',
+		'embedAssets': 'true',
+		'revealjs_transition':'linear', // default/cube/page/concave/zoom/linear/fade/none
+		'revealjs_history':'true',
+		'revealjs_slideNumber':'true',
+		'revealjs_theme':'simple' // beige/blood/moon/night/serif/simple/sky/solarized
+
+	options template_dirs : [new File(templateDir,'templates/slim').absolutePath ]
+
+	dependsOn download
+}
+
+wrapper {
+	gradleVersion = '4.0.1'
+}
