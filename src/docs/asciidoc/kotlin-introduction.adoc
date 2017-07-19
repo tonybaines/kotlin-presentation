@@ -1,0 +1,26 @@
+= Kotlin Introduction
+2017-07-19
+:revnumber: {project-version}
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../java]
+
+== Outline
+* What is Kotlin?
+* Where is it used?
+* A Better Java
+* Things That Java Can't Do
+
+== Short History of Kotlin
+
+== Who Uses Kotlin
+
+== A Better Java
+
+=== Basic Syntax
+* Class
+
+
+=== Questions?
+
+
+== End

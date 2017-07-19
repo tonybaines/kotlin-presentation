@@ -1,0 +1,8 @@
+..
+.
+shaape_spec.rb
+plantuml_spec.rb
+blockdiag_spec.rb
+test_helper.rb
+ditaa_spec.rb
+graphviz_spec.rb
