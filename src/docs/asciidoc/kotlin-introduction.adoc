@@ -237,8 +237,231 @@ fun createLabel(): JLabel =
   }
 -----
 
-== Extensions
+== Kotlin vs. Java
 
+Some common code patterns in Java, reimplemented in Kotlin
+
+=== DTO / Value Objects
+
+* A Simple class with one mutable and one immutable property
+
+=== Java
+[source,java]
+-----
+public class Author {
+    private final String name;
+    private String pseudonym;
+
+    public Author(String name, String pseudonym) { /*...*/ }
+
+    public String getName() { /*...*/ }
+
+    public String getPseudonym() { /*...*/ }
+
+    public void setPseudonym(String pseudonym) { /*...*/ }
+
+    @Override public boolean equals(Object o) { /*...*/ }
+
+    @Override public int hashCode() { /*...*/ }
+
+    @Override public String toString() { /*...*/ }
+}
+-----
+
+[NOTE.speaker]
+--
+The real class is around 50 lines long
+--
+
+=== Kotlin
+[source,java]
+-----
+data class Author(val name: String, var pseudonym: String)
+-----
+[NOTE.speaker]
+--
+The works as a JavaBean with frameworks like Jaxon, Hibernate etc.
+--
+
+=== Builder Pattern
+
+A way of constructing an instance of a class in different ways,
+often through a fluent API.
+
+[plantuml]
+-----
+@startuml
+class ColourScheme
+class Propiulsion
+class upholstery
+class Car {
+  colourScheme: ColourScheme
+  propulsion: Propulsion
+  upholsterty: Upholstery
+}
+@enduml
+-----
+
+
+=== Java (source)
+[source,java]
+-----
+/* Other class definitions */
+
+class Car {
+  /* Fields, constructor, getters/setters ...*/
+  static class Builder {
+    // Defaults
+    private ColourScheme colourScheme = new ColourScheme(Color.BLACK);
+    private Propulsion propulsion = new Propulsion("electric");
+    private Upholstery upholstery = new Upholstery("pvc");
+
+    public Builder withColourScheme(ColourScheme colourScheme) {
+        this.colourScheme = colourScheme; return this;
+    }
+    public Builder withPropulsion(Propulsion propulsion) { /**/ }
+    public Builder withUpholstery(Upholstery upholstery) { /**/ }
+    public Car createCar() {
+        return new Car(colourScheme, propulsion, upholstery);
+    }
+  }
+}
+-----
+
+=== Kotlin (source)
+[source,java]
+-----
+/* Complete */
+data class ColourScheme(val colour: Color)
+data class Propulsion(val type: String)
+data class Upholstery(val fabric: String)
+
+// Default argument values
+data class Car(
+        val colourScheme: ColourScheme = ColourScheme(Color.BLACK),
+        val propulsion: Propulsion = Propulsion("electric"),
+        val upholstery: Upholstery = Upholstery("pvc")
+)
+
+-----
+
+=== Java (use)
+[source,java]
+-----
+Car defaultCar = new Car.Builder().createCar();
+
+Car nonVeganCar = new Car.Builder()
+        .withUpholstery(new Upholstery("leather"))
+        .createCar();
+
+Car customCar = new Car.Builder()
+        .withColourScheme(new ColourScheme(Color.BISQUE))
+        .withPropulsion(new Propulsion("diesel"))
+        .withUpholstery(new Upholstery("Gold Stitched Denim"))
+        .createCar();
+-----
+
+=== Kotlin (use)
+[source,java]
+-----
+val defaultCar = Car()
+
+val nonVeganCar = Car(upholstery = Upholstery("leather"))
+
+val customCar = Car(
+        colourScheme = ColourScheme(Color.BISQUE),
+        propulsion = Propulsion("diesel"),
+        upholstery = Upholstery("Gold Stitched Denim")
+)
+-----
+
+=== Collections
+Java 8 streams finally introduced the filter/map/reduce
+API and lambdas but didn't make them available on existing
+collections.
+
+=== Java
+[source,java]
+-----
+List<String> colours = new ArrayList() {{
+    add("Red"); add("Orange"); add("Yellow"); /**/ add("Violet");
+}};
+
+List<String> filtered = colours.stream()
+        .filter((c) -> c.toLowerCase().contains("o"))
+        .collect(Collectors.toList());
+
+filtered.add("Octarine");
+
+assert filtered.contains("Octarine");
+-----
+
+=== Kotlin
+[source,java]
+-----
+// Easy declaration
+val colours = listOf("Red", "Orange", "Yellow", /*..*/ "Violet")
+
+// No 'stream' or 'collect'.  Default single argument 'it'
+val filtered = colours.filter { it.toLowerCase().contains("o") }
+// filtered.add() -- no such method
+
+// Immutable by default
+val mutable = filtered.toMutableList()
+mutable.add("Octarine")
+
+assert(mutable.contains("Octarine"))
+-----
+
+=== 'If' Expressions
+* A statement is imperative
+** It must have side effects to be useful
+* An expression returns a result
+** Side-effects are optional
+
+=== Java
+[source,java]
+-----
+boolean proceed = false;
+
+if (lights == RED) proceed = false;
+else if (lights == RED && lights == AMBER) proceed = true;
+else  proceed = (lights == GREEN);
+-----
+
+=== Kotlin
+[source,java]
+-----
+val proceed =
+        if (lights == RED) false
+        else if (lights == RED && lights == AMBER) true
+        else lights == GREEN
+-----
+OR
+[source,java]
+-----
+val size = when (Random().nextInt(100)) {
+    in 0.. 10 -> "low"
+    in 11..50 -> "medium"
+    else -> "high"
+}
+-----
+[NOTE.speaker]
+--
+Slightly less code, stops assignment and initialisation being accidentally split
+`when` blocks can work with many other built in predicates
+--
+
+
+=== Java
+[source,java]
+-----
+-----
+
+=== Kotlin
+[source,java]
+-----
+-----
 
 == Questions?
 

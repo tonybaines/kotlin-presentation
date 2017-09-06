@@ -1,7 +1,7 @@
 package comparison.java;
 
 public class DTO {
-    public static  class Author {
+    public static class Author {
         private final String name;
 
         private String pseudonym;
