@@ -1,4 +1,4 @@
-// Locally-scoped additions to any 'String'
+// Locally-scoped additions to any 'String' instance
 fun String.isPalindrome(): Boolean =
         this.equals(this.reverse(), ignoreCase = true)
 
