@@ -6,7 +6,7 @@ ifndef::sourcedir[:sourcedir: ../java]
 
 == Outline
 * What is Kotlin?
-* Where is it used?
+* Basics
 * A Better Java
 
 == What is Kotlin
@@ -22,6 +22,48 @@ ifndef::sourcedir[:sourcedir: ../java]
 * *2010* - Created
 * *2016* - 1.0 Release
 * *2017* - 1.1 Release, Android 1^st^ class support
+
+== Basics
+
+=== Design Goals
+* Expressiveness
+* Full Java interoperability
+* Excellent tool support
+
+=== Syntax
+* Java / C style (no semicolons)
+* Inferred types
+* ``public`` visibility by default
+* No checked Exceptions
+* Immutability
+* Null safety
+
+=== Classes and Objects
+[source,java]
+-----
+// Primary constructor, inheritance
+class TelephoneLine(val number: String) : Line {
+    private var foo: String? = null // nullable variable
+    // Constructor initialisation
+    init {
+      foo = LocalDateTime.now().toString()
+    }
+
+    companion object Factory {
+        // Acts like 'static' class, but isn't
+    }
+}
+-----
+
+[source,java]
+-----
+// Singleton
+object DatabaseAccess {
+    // ...
+}
+-----
+
+
 
 == Kotlin vs. Java
 
@@ -313,14 +355,95 @@ fun LocalTime.greeting(): String = when {
 println("Good ${LocalTime.now().greeting()} Tony.")
 -----
 
-=== Java
-[source,java]
+=== Delegation
+* Reuse through composition
+
+[plantuml]
 -----
+interface WalkAbility
+interface SwimAbility
+interface FlyAbility
+class WalkMixin implements WalkAbility
+class SwimMixin implements SwimAbility
+class FlyMixin implements FlyAbility
+class Duck {
+  walk()
+  swim()
+  fly()
+}
+Duck *-- WalkAbility
+Duck *-- SwimAbility
+Duck *-- FlyAbility
+
+class Penguin {
+    walk()
+    swim()
+}
+Penguin *-- WalkAbility
+Penguin *-- SwimAbility
 -----
 
-=== Kotlin
+=== Java Declaration
 [source,java]
 -----
+interface WalkAbility { void walk(); }
+interface FlyAbility { void fly(); }
+interface SwimAbility { void swim(); }
+class WalkMixin implements WalkAbility {
+    public void walk() {}
+}
+...
+class Duck implements WalkAbility, SwimAbility, FlyAbility {
+    private WalkAbility w;
+    ...
+    @Override public void walk() { w.walk(); }
+    ...
+}
+class Penguin implements WalkAbility, SwimAbility {...}
+-----
+
+=== Kotlin Declaration
+[source,java]
+-----
+interface WalkAbility { fun walk() }
+interface FlyAbility { fun fly() }
+interface SwimAbility { fun swim() }
+object WalkMixin: WalkAbility {
+  override fun walk() {}
+}
+...
+
+class Duck(w: WalkAbility, f: FlyAbility, s: SwimAbility)
+  : WalkAbility by w, FlyAbility by f, SwimAbility by s
+class Penguin(w: WalkAbility, s: SwimAbility)
+  : WalkAbility by w, SwimAbility by s
+-----
+
+=== Java Use
+[source,java]
+-----
+Duck duck = new Duck(
+    new WalkMixin(), new SwimMixin(), new FlyMixin());
+duck.fly();
+duck.swim();
+duck.walk();
+
+Penguin penguin = new Penguin(new WalkMixin(), new SwimMixin());
+penguin.swim();
+penguin.walk();
+-----
+
+=== Kotlin Use
+[source,java]
+-----
+val duck = Duck(WalkMixin, FlyMixin, SwimMixin)
+duck.fly()
+duck.walk()
+duck.swim()
+
+val penguin = Penguin(WalkMixin, SwimMixin)
+penguin.walk()
+penguin.swim()
 -----
 
 == Questions?
@@ -328,90 +451,6 @@ println("Good ${LocalTime.now().greeting()} Tony.")
 
 == End
 
-== A Better Java
-
-=== Basics
-[%step]
-* Java / C style
-* No semicolons required
-* Inferred types
-* No ``static`` values
-* ``public`` visibility by default
-* No checked Exceptions
-
-=== Scripts
-
-(no class/package definition)
-
-[source,java]
------
-import java.io.File
-
-val hosts = File("/etc/hosts").readText()
-hosts.split('\n')
-        .filter { !it.startsWith('#') }
-        .map { it.split("""\s+""")[0] }
-        .forEach { println(it) }
------
-
-[NOTE.speaker]
---
-* Compilation overhead
-* Useful for experiments
-* Can be run from the REPL (``kotlinc``)
---
-
-=== Classes
-
-[source,java]
------
-class TelephoneLine(val number: String) {
-    // ...
-}
------
-
-[NOTE.speaker]
---
-* A class with a single, immutable property set in the constructor
---
-
-=== Data Classes
-
-[source,java]
------
-data class User(val id: Long, val name: String,
-                var lastLogin: Instant = Instant.now())
------
-
-[NOTE.speaker]
---
-* A class with
-** three properties (one mutable with a default value)
-** ``equals()`` / ``hashCode()``
-** ``toString()``
-** ``copy()`` (``Clonable`` done right)
---
-
-=== Null Safety
-
-[source,java]
------
-var safe: String = "foo"
-safe  = null // Compilation error
-
-val unsafe = null // Compiles
-
-if (unsafe.contains("o")) // Compilation error (may be null)
-if (unsafe != null) {
-    if (unsafe.contains("o")) { } // OK, checked
-}
------
-
-[NOTE.speaker]
---
-* Non-null values enforced *by the compiler*
-* The compiler tracks if a nullable value has been checked
---
 
 === Casting
 
@@ -432,109 +471,3 @@ y.toUpperCase() // Compiles
 --
 * The compiler tracks any type checks
 --
-
-=== Immutability
-
-[source,java]
------
-val immutable = "foo" // Type-inference
-immutable = "bar" // Compilation error
-
-val things = listOf("foo", "bar", "baz")
-things.remove("baz") // Compilation error
-val newThings = things.minus("baz") // 'things' unchanged
-
-val ephemeralThings = mutableListOf("foo", "bar", "baz")
-ephemeralThings.remove("baz")
------
-
-[NOTE.speaker]
---
-* Compile-time checks for immutability
---
-
-=== `if` expressions
-[source,java]
------
-val proceed =
-      if (RED) false
-      else if (RED && AMBER && isClear)  true
-      else if (GREEN) true
-      else false
-
------
-
-[NOTE.speaker]
---
-* Evaluates to a value
-* Must be an exhaustive check
-** No need for Ternary expression (``? : ``)
---
-
-=== `when` expressions
-[source,java]
------
-val proceed = when {
-    RED -> false
-    (RED && AMBER && isClear) -> true
-    GREEN -> true
-    else -> false
-}
-
-// Can use any expression
-when (x) {
-    in 1..10 -> print("x is in the range")
-    in validNumbers -> print("x is valid")
-    !in 10..20 -> print("x is outside the range")
-    else -> print("none of the above")
-}
------
-
-[NOTE.speaker]
---
-* Cleaner syntax
-* Must be exhaustive when assigning
---
-
-=== `try` expressions
-
-=== Use `elvis` with `return` and `throw`
-
-=== Type Aliases
-
-=== Destructuring
-[source,java]
------
-fun printMap(m: Map<String, String>) {
-  for (e in m.entries) {
-    println("${e.key} -> ${e.value}")
-  }
-}
-
-// With destructuring
-fun printMap(m: Map<String, String>) {
-  for ((key, value) in m) {
-    println("$key -> $value")
-  }
-}
-
------
-
-=== `apply` for construction
-[source,java]
------
-// Construct, populate, return
-fun createLabel(): JLabel {
-  val label = JLabel("Foo")
-  label.foreground = Color.RED
-  label.background = Color.BLUE
-  return label
-}
-
-// using apply
-fun createLabel(): JLabel =
-  JLabel("Foo").apply {
-      foreground = Color.RED
-      background = Color.BLUE
-  }
------
