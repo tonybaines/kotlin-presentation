@@ -108,7 +108,7 @@ The works as a JavaBean with frameworks like Jaxon, Hibernate etc.
 
 === Builder Pattern
 
-A way of constructing an instance of a class in different ways,
+Construct an instance of a class in different ways,
 often through a fluent API.
 
 [plantuml]
@@ -153,12 +153,12 @@ val customCar = Car(
         colourScheme = ColourScheme(Color.BISQUE),
         propulsion = Propulsion("diesel"),
         upholstery = Upholstery("Gold Stitched Denim")
+    )
 
 // Copy and customise
 val betterCustomCar = customCar.copy(
-            colourScheme = ColourScheme(Color.MAGENTA)
-        )
-)
+        colourScheme = ColourScheme(Color.MAGENTA)
+    )
 -----
 
 === Java (source)
@@ -237,9 +237,9 @@ assert(mutable.contains("Octarine"))
 -----
 
 === 'If' Expressions
-* A statement is imperative
+* A _statement_ is imperative
 ** It must have side effects to be useful
-* An expression returns a result
+* An _expression_ returns a result
 ** Side-effects are optional
 
 === Java
@@ -260,7 +260,7 @@ val proceed =
         else if (lights == RED && lights == AMBER) true
         else lights == GREEN
 -----
-OR
+or
 [source,java]
 -----
 val size = when (Random().nextInt(100)) {
