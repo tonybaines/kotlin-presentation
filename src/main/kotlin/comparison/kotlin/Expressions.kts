@@ -2,7 +2,6 @@ package comparison.kotlin
 
 import comparison.kotlin.Expressions.Lights.*
 import java.util.Random
-import java.util.function.Predicate
 
 enum class Lights {
     RED, AMBER, GREEN

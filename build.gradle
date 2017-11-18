@@ -1,5 +1,5 @@
 buildscript {
-	ext.kotlin_version = '1.1.50'
+	ext.kotlin_version = '1.1.60'
 	repositories { jcenter() }
 	dependencies {
 		classpath 'org.ysb33r.gradle:vfs-gradle-plugin:1.0-beta1'
@@ -11,7 +11,6 @@ buildscript {
 plugins {
 	id 'org.asciidoctor.convert' version '1.5.3'
 }
-
 apply plugin: 'com.github.jruby-gradle.base'
 apply plugin: 'org.ysb33r.vfs'
 apply plugin: 'java'
@@ -39,6 +38,14 @@ dependencies {
 	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 }
 
+apply plugin: 'idea'
+idea{
+  module {
+    sourceDirs += file('src/demo')
+  }
+}
+
+
 compileKotlin {
 	kotlinOptions.jvmTarget = '1.8'
 }
@@ -55,9 +62,9 @@ repositories {
 task download doLast {
 	mkdir downloadDir
 	vfs {
-		cp "zip:${project.projectDir}/lib/asciidoctor-reveal.js-${asciidoctorBackendVersion}.zip!asciidoctor-reveal.js-${asciidoctorBackendVersion}",
+		cp "zip:${project.projectDir.path.replace('\\', '/')}/lib/asciidoctor-reveal.js-${asciidoctorBackendVersion}.zip!asciidoctor-reveal.js-${asciidoctorBackendVersion}",
 			templateDir, recursive:true, overwrite:true
-		cp "zip:${project.projectDir}/lib/reveal.js-${revealjsVersion}.zip!reveal.js-${revealjsVersion}",
+		cp "zip:${project.projectDir.path.replace('\\', '/')}/lib/reveal.js-${revealjsVersion}.zip!reveal.js-${revealjsVersion}",
 			revealjsDir, recursive:true, overwrite:true
 	}
 }

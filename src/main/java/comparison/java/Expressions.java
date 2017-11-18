@@ -19,6 +19,6 @@ public class Expressions {
         else if (lights == RED && lights == AMBER) proceed = true;
         else  proceed = (lights == GREEN);
 
-        new Random().nextInt(100)
+        new Random().nextInt(100);
     }
 }

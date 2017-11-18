@@ -1,13 +1,9 @@
 = Kotlin Introduction
-2017-07-19
+2017-11
 :revnumber: {project-version}
 ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../java]
 
-== Outline
-* What is Kotlin?
-* Basics
-* A Better Java
 
 == What is Kotlin
 * Statically typed language
@@ -15,7 +11,8 @@ ifndef::sourcedir[:sourcedir: ../java]
 * Targets
 ** JVM / Android
 ** JavaScript
-** Native
+** Native via LLVM
+*** Windows, Linux, iOS, WebAssembly
 
 
 == Short History of Kotlin
@@ -38,30 +35,12 @@ ifndef::sourcedir[:sourcedir: ../java]
 * Immutability
 * Null safety
 
-=== Classes and Objects
-[source,java]
------
-// Primary constructor, inheritance
-class TelephoneLine(val number: String) : Line {
-    private var foo: String? = null // nullable variable
-    // Constructor initialisation
-    init {
-      foo = LocalDateTime.now().toString()
-    }
-
-    companion object Factory {
-        // Acts like 'static' class, but isn't
-    }
-}
------
-
-[source,java]
------
-// Singleton
-object DatabaseAccess {
-    // ...
-}
------
+=== Demo
+* Scripts
+* Class-less functions
+* Declarations
+* Type-inference and Nullable types
+* Classes and Objects
 
 
 
