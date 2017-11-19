@@ -5,32 +5,41 @@ ifndef::imagesdir[:imagesdir: images]
 ifndef::sourcedir[:sourcedir: ../java]
 
 
-== What is Kotlin
-* Statically typed language
-* Inspired by Java, Scala, C#, Groovy amongst others
-* Targets
-** JVM / Android
-** JavaScript
-** Native via LLVM
-*** Windows, Linux, iOS, WebAssembly
-
+== A Short History of Me on the JVM
+* Programming Java since 1996 (JDK 1.0)
+* Groovy and Grails
+* Scala / Spark
+* Kotlin over the past year
 
 == Short History of Kotlin
 * *2010* - Created
 * *2016* - 1.0 Release
 * *2017* - 1.1 Release, Android 1^st^ class support
 
+
 == Basics
+
+
+=== What is Kotlin
+* Statically typed language
+* Inspired by Java, Scala, C#, Groovy ...
+* Targets
+** JVM / Android
+** JavaScript
+** Native via LLVM
 
 === Design Goals
 * Expressiveness
-* Full Java interoperability
+* 100% Java interoperability
 * Excellent tool support
 
 === Syntax
 * Java / C style (no semicolons)
 * Inferred types
+
+=== Differences from Java
 * ``public`` visibility by default
+* Classes ``final`` by default
 * No checked Exceptions
 * Immutability
 * Null safety
@@ -42,7 +51,17 @@ ifndef::sourcedir[:sourcedir: ../java]
 * Type-inference and Nullable types
 * Classes and Objects
 
+== New Abilities
+* Extension functions / properties
+* Named and default arguments
+* ``if`` expressions
+* Strings
 
+=== Demo
+
+=== Libraries
+* Tornado
+* Gradle script Kotlin
 
 == Kotlin vs. Java
 
