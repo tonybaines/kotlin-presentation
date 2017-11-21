@@ -115,5 +115,5 @@ asciidoctor {
 }
 
 wrapper {
-	gradleVersion = '4.2'
+	gradleVersion = '4.3'
 }
