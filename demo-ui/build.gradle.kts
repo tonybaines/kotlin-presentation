@@ -11,6 +11,7 @@ plugins {
 
 dependencies {
     compile(kotlin("stdlib"))
+    compile("com.github.qwertukg:SeleniumBuilder:b08536ffff")
     compile("no.tornado:tornadofx:1.7.12")
 }
 
@@ -20,6 +21,7 @@ application {
 
 repositories {
     jcenter()
+    maven("https://jitpack.io")
 }
 
 

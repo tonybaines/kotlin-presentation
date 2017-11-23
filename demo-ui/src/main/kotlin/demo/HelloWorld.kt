@@ -8,11 +8,9 @@ import javafx.scene.control.TabPane
 import javafx.scene.layout.VBox
 import javafx.stage.StageStyle
 import tornadofx.*
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
-import java.time.format.DateTimeFormatter
 
 class HelloWorldApp : App(HelloWorldView::class)
 class HelloWorldView : View() {
