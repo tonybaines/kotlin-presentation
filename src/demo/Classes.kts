@@ -1,8 +1,6 @@
-import java.util.function.DoubleBinaryOperator
-
 /*
  * Constructors / properties
- * MobilePhone - val make, var provider
+ * Conference(date, venue, talks), Talk(time, track, subject, speaker), Speaker(name)
  * Singleton - Config
  */
 
