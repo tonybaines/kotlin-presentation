@@ -1,6 +1,6 @@
-package demo
+package demo.tornado
 
-import demo.Model.Person
+import demo.tornado.Model.Person
 import javafx.application.Application
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.chart.PieChart
@@ -21,7 +21,7 @@ class HelloWorldView : View() {
         item(name = "E_xit", keyCombination = "Ctrl+Q")
             .action { System.exit(0) }
         item(name = "_Clock", keyCombination = "Ctrl+T")
-            .action { find(Clock::class).openModal(stageStyle = StageStyle.UTILITY) }
+            .action { find(Clock::class).openModal(stageStyle = StageStyle.UNIFIED) }
       }
     }
 

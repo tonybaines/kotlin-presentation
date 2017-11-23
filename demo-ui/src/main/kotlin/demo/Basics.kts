@@ -1,4 +1,4 @@
-/*
+package demo/*
  * Declaring vals/vars
  * Type Inference
  * Nullable Types

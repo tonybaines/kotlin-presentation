@@ -1,15 +1,13 @@
 buildscript {
-	ext.kotlin_version = '1.1.60'
-	repositories { jcenter() }
-	dependencies {
-		classpath 'org.ysb33r.gradle:vfs-gradle-plugin:1.0-beta1'
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.jruby-gradle:jruby-gradle-plugin:1.4.0"
-	}
+  repositories { jcenter() }
+  dependencies {
+    classpath 'org.ysb33r.gradle:vfs-gradle-plugin:1.0-beta1'
+    classpath "com.github.jruby-gradle:jruby-gradle-plugin:1.4.0"
+  }
 }
 
 plugins {
-	id 'org.asciidoctor.convert' version '1.5.3'
+  id 'org.asciidoctor.convert' version '1.5.3'
 }
 apply plugin: 'com.github.jruby-gradle.base'
 apply plugin: 'org.ysb33r.vfs'
@@ -20,100 +18,84 @@ apply plugin: 'org.asciidoctor.convert'
 version = '1.0.0-SNAPSHOT'
 
 ext {
-	jrubyVersion = '1.7.27'
-	revealjsVersion = '3.5.0'
-	asciidoctorBackendVersion = 'master'
-	downloadDir = new File(buildDir,'download')
-	templateDir = new File(downloadDir,'templates')
-	revealjsDir = new File(downloadDir,'reveal.js')
+  jrubyVersion = '1.7.27'
+  revealjsVersion = '3.5.0'
+  asciidoctorBackendVersion = 'master'
+  downloadDir = new File(buildDir, 'download')
+  templateDir = new File(downloadDir, 'templates')
+  revealjsDir = new File(downloadDir, 'reveal.js')
 }
 
 jruby {
-	defaultRepositories = false
-	defaultVersion = jrubyVersion
-	execVersion = jrubyVersion
-}
-
-dependencies {
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-}
-
-apply plugin: 'idea'
-idea{
-  module {
-    sourceDirs += file('src/demo')
-  }
-}
-
-
-compileKotlin {
-	kotlinOptions.jvmTarget = '1.8'
+  defaultRepositories = false
+  defaultVersion = jrubyVersion
+  execVersion = jrubyVersion
 }
 
 repositories {
-	jcenter()
-	mavenCentral()
-	maven {
-		name 'rubygems-release'
-		url 'http://rubygems-proxy.torquebox.org/releases'
-	}
+  jcenter()
+  mavenCentral()
+  maven {
+    name 'rubygems-release'
+    url 'http://rubygems-proxy.torquebox.org/releases'
+  }
 }
 
 task download doLast {
-	mkdir downloadDir
-	vfs {
-		cp "zip:${project.projectDir.path.replace('\\', '/')}/lib/asciidoctor-reveal.js-${asciidoctorBackendVersion}.zip!asciidoctor-reveal.js-${asciidoctorBackendVersion}",
-			templateDir, recursive:true, overwrite:true
-		cp "zip:${project.projectDir.path.replace('\\', '/')}/lib/reveal.js-${revealjsVersion}.zip!reveal.js-${revealjsVersion}",
-			revealjsDir, recursive:true, overwrite:true
-	}
+  mkdir downloadDir
+  vfs {
+    cp "zip:${project.projectDir.path.replace('\\', '/')}/lib/asciidoctor-reveal.js-${asciidoctorBackendVersion}.zip!asciidoctor-reveal.js-${asciidoctorBackendVersion}",
+      templateDir, recursive: true, overwrite: true
+    cp "zip:${project.projectDir.path.replace('\\', '/')}/lib/reveal.js-${revealjsVersion}.zip!reveal.js-${revealjsVersion}",
+      revealjsDir, recursive: true, overwrite: true
+  }
 }
 
 download {
-	description "Download extra revealjs resources"
-	outputs.dir templateDir
-	outputs.dir revealjsDir
+  description "Download extra revealjs resources"
+  outputs.dir templateDir
+  outputs.dir revealjsDir
 }
 
 asciidoctor {
-	sources {
-		include 'kotlin-introduction.adoc'
-	}
+  sources {
+    include 'kotlin-introduction.adoc'
+  }
 
-	resources {
-		from ('src/resources') {
-			include 'images/**'
-		}
-		from (downloadDir) {
-			include 'reveal.js/**'
-		}
-	}
+  resources {
+    from('src/resources') {
+      include 'images/**'
+    }
+    from(downloadDir) {
+      include 'reveal.js/**'
+    }
+  }
 
-	backends    'revealjs'
+  backends 'revealjs'
 
-	requires = ['asciidoctor-diagram']
-	gemPath file('src/resources/gems')
+  requires = ['asciidoctor-diagram']
+  gemPath file('src/resources/gems')
 
-	attributes	'build-gradle': file('build.gradle'),
-		'sourcedir': project.sourceSets.main.java.srcDirs[0],
-		'source-highlighter' : 'coderay', // highlight/coderay/pygments
-		'imagesdir':'./images',
-		'toc':'left',
-		'setanchors':'true',
-		'idprefix':'',
-		'idseparator':'-',
-		'docinfo1':'true',
-		'embedAssets': 'true',
-		'revealjs_transition':'linear', // default/cube/page/concave/zoom/linear/fade/none
-		'revealjs_history':'true',
-		'revealjs_slideNumber':'true',
-		'revealjs_theme':'simple' // beige/blood/moon/night/serif/simple/sky/solarized
+  attributes 'build-gradle': file('build.gradle'),
+    'sourcedir': project.sourceSets.main.java.srcDirs[0],
+    'source-highlighter': 'coderay', // highlight/coderay/pygments
+    'imagesdir': './images',
+    'toc': 'left',
+    'setanchors': 'true',
+    'idprefix': '',
+    'idseparator': '-',
+    'docinfo1': 'true',
+    'embedAssets': 'true',
+    'revealjs_transition': 'linear', // default/cube/page/concave/zoom/linear/fade/none
+    'revealjs_history': 'true',
+    'revealjs_slideNumber': 'true',
+    'revealjs_theme': 'simple' // beige/blood/moon/night/serif/simple/sky/solarized
 
-	options template_dirs : [new File(templateDir,'templates/slim').absolutePath ]
+  options template_dirs: [new File(templateDir, 'templates/slim').absolutePath]
 
-	dependsOn download
+  dependsOn download
 }
 
 wrapper {
-	gradleVersion = '4.3'
+  gradleVersion = '4.3'
 }
