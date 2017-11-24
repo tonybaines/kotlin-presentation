@@ -12,7 +12,6 @@ plugins {
 apply plugin: 'com.github.jruby-gradle.base'
 apply plugin: 'org.ysb33r.vfs'
 apply plugin: 'java'
-apply plugin: 'kotlin'
 apply plugin: 'org.asciidoctor.convert'
 
 version = '1.0.0-SNAPSHOT'
@@ -97,5 +96,5 @@ asciidoctor {
 }
 
 wrapper {
-  gradleVersion = '4.3'
+  gradleVersion = '4.2'
 }
