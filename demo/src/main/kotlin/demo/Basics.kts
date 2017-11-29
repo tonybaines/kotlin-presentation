@@ -6,12 +6,8 @@ package demo/*
  * REPL
  */
 
-val x = "Foo"
-val y = 42
-var z = false
+var name: String = "Tony"
+name = "Bob"
 
 
-
-z = true
-
-println("x: $x y: $y z: $z")
+println(name)

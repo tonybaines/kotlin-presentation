@@ -11,14 +11,28 @@ ifndef::sourcedir[:sourcedir: ../java]
 * Scala / Spark
 * Kotlin over the past year
 
+== Is Kotlin the Next Java?
+[%step]
+* No
+
+== Is Kotlin a Scala Killer?
+[%step]
+* No
+
+== Is Kotlin a replacement for Java on Android?
+[%step]
+* Could be ...
+
+== Is Kotlin worth your time?
+[%step]
+* ...
+
 == Short History of Kotlin
 * *2010* - Created
 * *2016* - 1.0 Release
 * *2017* - 1.1 Release, Android 1^st^ class support
 
-
 == Basics
-
 
 === What is Kotlin
 * Statically typed language
@@ -51,19 +65,17 @@ ifndef::sourcedir[:sourcedir: ../java]
 * Type-inference and Nullable types
 * Classes and Objects
 
-== New Abilities
+== Demo 2 - New Abilities
 * Extension functions / properties
 * Named and default arguments
 * ``if`` expressions
 * Strings
 
-=== Demo
-
-== Libraries
+== Demo 3 - DSLs
 * Tornado
-* Gradle script Kotlin
+* Selenium
 
-== Kotlin vs. Java
+== Kotlin cf. Java
 
 Some common code patterns in Java, reimplemented in Kotlin
 
@@ -233,6 +245,34 @@ mutable.add("Octarine")
 
 assert(mutable.contains("Octarine"))
 -----
+
+
+
+== End
+
+
+== Extras
+
+=== Casting
+
+[source,java]
+-----
+val x: Any = "bang" // 'Smart' cast
+x.toUpperCase() // Compilation error, no method Any#toUpperCase
+
+if (x is String) {
+    print(x.toUpperCase()) // x is automatically cast to String
+}
+
+val y = x as String // 'Unsafe' cast, may throw exception
+y.toUpperCase() // Compiles
+-----
+
+[NOTE.speaker]
+--
+* The compiler tracks any type checks
+--
+
 
 === 'If' Expressions
 * A _statement_ is imperative
@@ -443,29 +483,3 @@ val penguin = Penguin(WalkMixin, SwimMixin)
 penguin.walk()
 penguin.swim()
 -----
-
-== Questions?
-
-
-== End
-
-
-=== Casting
-
-[source,java]
------
-val x: Any = "bang" // 'Smart' cast
-x.toUpperCase() // Compilation error, no method Any#toUpperCase
-
-if (x is String) {
-    print(x.toUpperCase()) // x is automatically cast to String
-}
-
-val y = x as String // 'Unsafe' cast, may throw exception
-y.toUpperCase() // Compiles
------
-
-[NOTE.speaker]
---
-* The compiler tracks any type checks
---
